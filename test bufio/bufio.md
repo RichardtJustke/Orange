@@ -331,4 +331,149 @@ func main() {
 * `bufio` = performance + controle
 
 ---
+# 🧰 Kit básico do `bufio.Reader`
+
+## 🔹 Criar o reader (sempre igual)
+
+```go
+reader := bufio.NewReader(os.Stdin)
+```
+
+---
+
+## 🔹 Ler texto (padrão ouro)
+
+```go
+input, _ := reader.ReadString('\n')
+```
+
+👉 Isso lê **até o ENTER**
+
+---
+
+## 🔹 Limpar o input (ESSENCIAL)
+
+```go
+input = strings.TrimSpace(input)
+```
+
+👉 remove:
+
+* `\n`
+* espaços extras
+
+Se você não fizer isso… seu programa começa a “agir estranho” 👀
+
+---
+
+# 🧠 Padrão que você vai usar 90% do tempo
+
+```go
+fmt.Print("Escolha uma opção: ")
+
+input, _ := reader.ReadString('\n')
+input = strings.TrimSpace(input)
+```
+
+Pronto. Isso aqui já resolve metade da vida.
+
+---
+
+# 🔢 Convertendo para número (menu CLI)
+
+```go
+import "strconv"
+
+num, err := strconv.Atoi(input)
+
+if err != nil {
+	fmt.Println("Digite um número válido")
+	return
+}
+```
+
+---
+
+# 🧪 Exemplo real (menu simples)
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Println("1 - Adicionar nota")
+	fmt.Println("2 - Sair")
+
+	fmt.Print("Escolha: ")
+
+	input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(input)
+
+	opcao, err := strconv.Atoi(input)
+
+	if err != nil {
+		fmt.Println("Opção inválida")
+		return
+	}
+
+	if opcao == 1 {
+		fmt.Print("Digite sua nota: ")
+
+		nota, _ := reader.ReadString('\n')
+		nota = strings.TrimSpace(nota)
+
+		fmt.Println("Nota salva:", nota)
+	} else {
+		fmt.Println("Saindo...")
+	}
+}
+```
+
+---
+
+# ⚠️ Erros clássicos (evita esses e você já tá acima da média)
+
+❌ esquecer `TrimSpace`
+❌ usar `fmt.Scan` (vai quebrar com espaço)
+❌ ignorar erro de conversão
+❌ misturar tipos sem converter
+
+---
+
+# 💡 Dica ninja (isso aqui muda o jogo)
+
+Sempre crie uma função pra input:
+
+```go
+func lerInput(reader *bufio.Reader) string {
+	input, _ := reader.ReadString('\n')
+	return strings.TrimSpace(input)
+}
+```
+
+Uso:
+
+```go
+input := lerInput(reader)
+```
+
+👉 deixa seu código MUITO mais limpo
+
+---
+
+# 🧠 Resumo rápido
+
+* `ReadString('\n')` → lê input
+* `TrimSpace()` → limpa
+* `Atoi()` → converte número
+* repetir isso = CLI funcionando
 
